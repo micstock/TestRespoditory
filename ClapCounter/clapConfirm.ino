@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 //see your comment
+=======
+/*
+    clapConfirm() will confirm a clap is identified
+*/
+>>>>>>> 2f5355514ef98b425676f9697585ed59c7a390d4
 
 void clapConfirm(){
   
