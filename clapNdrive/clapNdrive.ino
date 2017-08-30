@@ -1,4 +1,4 @@
-
+//Sound Sensor & LED Pin
 int clapCounter =0;
 int timebase = 0;
 int flagConfirm =0;
@@ -9,10 +9,20 @@ int REDpin=12;
 int BLUEpin=10;
 int GREENpin=11;
 
+// connect motor controller pins to Arduino digital pins
+// motor one
+int enA = 6;
+int in1 = 4;
+int in2 = 5;
+// motor two
+int enB = 9;
+int in3 = 7;
+int in4 = 8;
+
 
 void setup() {
-  // put your setup code here, to run once:
-  attachInterrupt(0,IntHandler,RISING);
+  // set sounder sensor and LED pins
+  attachInterrupt(0,IntHandler,RISING); //sound sensor interrupt
   //pinMode(ledPin, OUTPUT);
   pinMode(REDpin,OUTPUT);
   pinMode(GREENpin,OUTPUT);
@@ -22,6 +32,15 @@ void setup() {
   digitalWrite(GREENpin,HIGH);
   digitalWrite(BLUEpin,HIGH);
   Serial.begin(9600); 
+ 
+  // set all the motor control pins to outputs
+  pinMode(enA, OUTPUT);
+  pinMode(enB, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+
 }
 
 
@@ -30,6 +49,9 @@ void loop() {
 /* timebase is the time period allowed to detect the all the hand Clap input
  * 
  */
+
+  
+
  Serial.println(timebase);
 if (timebase>0){ timebase--;}
 else{
@@ -37,11 +59,13 @@ else{
     if(clapCounter==1){
       Serial.println("    One Clap");
       digitalWrite(BLUEpin,LOW);
+      demoOne();
       delay(1000);
       }
     if(clapCounter==2){
             Serial.println("    Two Claps");
             digitalWrite(GREENpin,LOW);
+            demoTwo();
             delay(1000);
             }
     if(clapCounter==3){
