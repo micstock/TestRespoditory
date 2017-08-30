@@ -1,4 +1,6 @@
-
+/*
+    clapConfirm() will confirm a clap is identified
+*/
 
 void clapConfirm(){
   
