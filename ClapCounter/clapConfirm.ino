@@ -1,9 +1,15 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 //see your commen
 /*
     clapConfirm() will confirm a clap is identified
 */
 
+=======
+/*
+    clapConfirm() will confirm a clap is identified
+*/
+>>>>>>> 36b6897bfe6bfb636e69a87386bd80465c72346a
 =======
 /*
     clapConfirm() will confirm a clap is identified
