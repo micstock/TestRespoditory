@@ -12,7 +12,7 @@ int GREENpin=11;
 
 void setup() {
   // put your setup code here, to run once:
-  attachInterrupt(0,IntHandler,RISING);
+  attachInterrupt(0,IntHandler,CHANGE);
   //pinMode(ledPin, OUTPUT);
   pinMode(REDpin,OUTPUT);
   pinMode(GREENpin,OUTPUT);
@@ -62,7 +62,7 @@ else{
   digitalWrite(BLUEpin,HIGH);
   digitalWrite(GREENpin,HIGH);
   digitalWrite(REDpin,HIGH);
-  //delay(9);
+  delay(9);
   
 }
 
