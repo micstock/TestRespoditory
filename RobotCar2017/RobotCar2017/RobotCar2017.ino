@@ -4,7 +4,7 @@
  * 
  */
 #define SINGLE_CLAP_SILENT_USEC 6000
-#define ALL_CLAP_SILENT_USEC 450000
+#define ALL_CLAP_SILENT_USEC 455000
 
 //MY: RGB_PIN
 const byte RGB_BLUE_PIN =11;
@@ -54,8 +54,11 @@ unsigned int motor_mode_change = 0;
 #define TRIGGER_PIN  9  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define ECHO_PIN     10  // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define MAX_DISTANCE 200 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
-  unsigned long dist_check_start = millis();
-
+  unsigned long crash_check_start = millis();
+  unsigned int ping_sample_cur =1000;
+  unsigned int ping_sample_2 = 1000;
+  unsigned int ping_sample_3 =1000;
+  unsigned int ping_average = 50;
   
 
 
@@ -91,9 +94,8 @@ void setup() {
   /*
    * SR-04 Ultrasound Sensor
    */
-//  NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
-  //unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
-  unsigned int dist_to_crash= 20;
+
+  //unsigned int dist_to_crash= 20;
 
 
   
@@ -106,19 +108,28 @@ void setup() {
 void loop() {
   unsigned long curr_us = 0;
   unsigned long quiet_us = 0;
-    NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
+  NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and maximum distance.
   unsigned int uS = sonar.ping();// Send ping, get ping time in microseconds (uS).
- 
-  if (dist_check_start + 1000 <millis())
+
+   if (crash_check_start + 50 <millis())
   {
-    Serial.print("ping:");
-    Serial.println(uS/US_ROUNDTRIP_CM);
-    if (uS/US_ROUNDTRIP_CM < 15)
+    ping_sample_3 = ping_sample_2;
+    ping_sample_2 =ping_sample_cur;
+    ping_sample_cur = uS/US_ROUNDTRIP_CM; //return distance in cm
+    ping_average = (ping_sample_3+ping_sample_2+ping_sample_cur)/3;
+    //Serial.print("ping:");
+    //Serial.print(ping_sample_cur); Serial.print("   ");Serial.println(ping_average);
+    if (ping_sample_cur >0 && ping_sample_cur < 20 && ping_average < 27 && motor_drive_mode==1 )
     {
+      motor_drive_mode=0;
+      motor_drive(0,0,0,0,0,0);
+      delay(2);
+      motor_drive(0,1,100,0,1,100);
+      delay(500);
       motor_drive(0,0,0,0,0,0);
       reset_all_flag();  
     }
-  dist_check_start = millis();
+  crash_check_start = millis();
   }
   
  
@@ -144,7 +155,7 @@ void loop() {
 
   if (clap_cnt)
   {
-    delay(50);
+    //delay(50);
     curr_us = micros();
     quiet_us = curr_us - last_clap_fall_ts;
     
@@ -211,7 +222,7 @@ void loop() {
       motor_drive(0,0,0,0,0,0);
       break;
       case 1: //FWD
-      motor_drive( 1,0,122,1,0,100);
+      motor_drive( 1,0,200,1,0,200);
       motor_mode_change=0;
       break;
       case 2: //STOP
